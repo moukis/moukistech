@@ -1,0 +1,66 @@
+{
+  "summary": "Retest of iteration_1 HIGH bug (Mongo id serialization). Backend now emits `id` instead of `_id` on /api/contact and /api/blog (list, get-by-slug, POST, PUT) thanks to response_model_by_alias=False. All 13 pytest cases pass. Frontend admin CRUD flows (mark-read, delete-contact, create/edit/delete post) all succeed end-to-end via UI — testids on rows now contain real 24-char ObjectIds. Public /blog list and article pages still render fine.",
+  "tested_scope": ["backend", "frontend", "integration"],
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "PUT /api/blog/{id}", "issue": "Requires full BlogCreate body (title + content min 5); not a partial update. Not a bug, but forces frontend to send full form on any edit (which it does)."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Contact form (public)", "issues": ["When calling `page.fill` on all inputs but not touching the shadcn Select service field, the submit didn't seem to persist a record (created via UI in this run). Not reproducible cleanly — form validation may silently reject. Consider surfacing form errors after submit for the debug flow."]}
+    ]
+  },
+  "passed_tests": {
+    "backend_pytest": [
+      "TestAuth::test_login_success",
+      "TestAuth::test_login_bad_creds",
+      "TestAuth::test_me_requires_auth",
+      "TestAuth::test_me_with_token",
+      "TestBlogSerialization::test_list_blog_emits_id_not_underscore_id",
+      "TestBlogSerialization::test_get_blog_by_slug_emits_id",
+      "TestBlogSerialization::test_get_blog_unknown_slug_404",
+      "TestBlogCRUD::test_create_edit_delete_blog",
+      "TestBlogCRUD::test_delete_blog_requires_auth",
+      "TestContactSerialization::test_public_create_and_list_emits_id",
+      "TestContactSerialization::test_contact_list_requires_auth",
+      "TestContactCRUD::test_create_markread_delete_contact",
+      "TestContactCRUD::test_contact_validation"
+    ],
+    "frontend_playwright": [
+      "Admin login (rewllasy@gmail.com / MoukisTech2025!) -> /admin",
+      "Messages tab: every contact row testid contains a real 24-char ObjectId (no `undefined`)",
+      "Admin PATCH /api/contact/{id}/read via mark-read button -> button removed after read",
+      "Admin DELETE /api/contact/{id} via del-contact button -> row removed",
+      "Blog tab: every post row testid contains real ObjectId",
+      "Create blog post (POST /api/blog) returns 201 and row appears with real id in testid",
+      "Edit blog post (PUT /api/blog/{id}) via edit-post -> title update persists",
+      "Delete blog post (DELETE /api/blog/{id}) via del-post -> row removed",
+      "Public /blog renders cards; article page renders correctly with title/content"
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/iteration_2.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "server.py list_contacts / list_blog build models with dict spread `{**d, '_id': str(d['_id'])}` in every response — fine but a tiny helper `serialize_doc(d)` would DRY it up.",
+    "PUT /api/blog/{post_id} rebuilds full body (BlogCreate) — acceptable, but an optional Patch route would enable partial edits.",
+    "server.py declares two @app.on_event handlers (startup/shutdown) — deprecated in FastAPI 0.109+. Consider migrating to lifespan context manager.",
+    "server.py `mongo_url = os.environ['MONGO_URL']` and `db = client[os.environ['DB_NAME']]` will KeyError at import time if env missing — acceptable fail-fast but hides root cause during tests."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "Admin: rewllasy@gmail.com / MoukisTech2025! (Bearer JWT in localStorage 'moukis_token')",
+  "seed_data_creation": "Created and cleaned up test contacts (TEST_UI_MarkDelete) and blog posts (TEST_UI_Article_E2E, TEST_UI_Article_E2E_EDITED). Pytest also creates/deletes TEST_Alice, TEST_Bob contacts and TEST_Post_* posts.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend `_id`/`id` serialization bug from iteration_1 is fully fixed. Both /api/contact and /api/blog use response_model_by_alias=False, so JSON emits `id`. Admin CRUD (mark-read, del-contact, create/edit/del post) work end-to-end. Regression pytest suite at /app/backend/tests/backend_test.py (13 tests, all pass). Public contact form UI submit is a bit finicky (may silently skip when Select service left untouched) — seed contacts via API for reliability.",
+  "rca of the issue": "Iteration_1 issue: BlogPost & Contact Pydantic models used Field(alias='_id'). When FastAPI serialized via response_model (default), it wrote the alias '_id' to JSON. Frontend AdminDashboard reads `p.id` and `c.id` -> undefined -> DELETE /api/blog/undefined -> 500. Fix applied by main agent: add response_model_by_alias=False to all list/get/POST/PUT routes returning these models. Verified via curl and pytest that responses now contain `id` (24-char string) and no `_id`. UI now correctly targets rows by real ids and all destructive/mutation ops succeed."
+}

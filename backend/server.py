@@ -176,7 +176,7 @@ async def create_contact(data: ContactCreate):
     return {"success": True, "id": str(res.inserted_id)}
 
 
-@api_router.get("/contact", response_model=List[Contact])
+@api_router.get("/contact", response_model=List[Contact], response_model_by_alias=False)
 async def list_contacts(current=Depends(get_current_user)):
     docs = await db.contacts.find().sort("created_at", -1).to_list(1000)
     return [Contact(**{**d, "_id": str(d["_id"])}) for d in docs]
@@ -197,14 +197,14 @@ async def delete_contact(contact_id: str, current=Depends(get_current_user)):
 # ---------------------------------------------------------------------------
 # Blog routes
 # ---------------------------------------------------------------------------
-@api_router.get("/blog", response_model=List[BlogPost])
+@api_router.get("/blog", response_model=List[BlogPost], response_model_by_alias=False)
 async def list_blog(published_only: bool = True):
     query = {"published": True} if published_only else {}
     docs = await db.blog_posts.find(query).sort("created_at", -1).to_list(1000)
     return [BlogPost(**{**d, "_id": str(d["_id"])}) for d in docs]
 
 
-@api_router.get("/blog/{slug}", response_model=BlogPost)
+@api_router.get("/blog/{slug}", response_model=BlogPost, response_model_by_alias=False)
 async def get_blog(slug: str):
     doc = await db.blog_posts.find_one({"slug": slug})
     if not doc:
@@ -223,7 +223,7 @@ async def _unique_slug(base: str, exclude_id: Optional[str] = None) -> str:
         slug = f"{base}-{i}"
 
 
-@api_router.post("/blog", response_model=BlogPost, status_code=201)
+@api_router.post("/blog", response_model=BlogPost, status_code=201, response_model_by_alias=False)
 async def create_blog(data: BlogCreate, current=Depends(get_current_user)):
     slug = await _unique_slug(slugify(data.title))
     ts = now_utc().isoformat()
@@ -234,7 +234,7 @@ async def create_blog(data: BlogCreate, current=Depends(get_current_user)):
     return BlogPost(**doc)
 
 
-@api_router.put("/blog/{post_id}", response_model=BlogPost)
+@api_router.put("/blog/{post_id}", response_model=BlogPost, response_model_by_alias=False)
 async def update_blog(post_id: str, data: BlogCreate, current=Depends(get_current_user)):
     existing = await db.blog_posts.find_one({"_id": ObjectId(post_id)})
     if not existing:

@@ -1,0 +1,42 @@
+{
+  "summary": "First-finish smoke test of Moukis tech (FR). Backend auth + CRUD (contact, blog) all functional via API. Frontend landing, contact form validation & submit, blog list/article, admin login, tabs, and post creation all work. CRITICAL integration bug: backend serializes Mongo IDs with alias `_id` in JSON responses, but frontend AdminDashboard reads `c.id` / `p.id`. This makes admin DELETE (blog & contact) and mark-read UI calls hit `/api/blog/undefined` → 500, and all row-level data-testids become `del-post-undefined`, breaking targeted testing. Non-blocker: spec listed slug `sylla-repair` but seeded slugs are French title-based (as intended).",
+  "tested_scope": ["frontend", "backend", "auth", "integration"],
+  "passed": [
+    "POST /api/auth/login returns access_token + user; wrong creds → 401",
+    "GET /api/auth/me: 401 without token, 200 with token",
+    "POST /api/contact (public) → 201 with id",
+    "GET /api/contact requires auth (401 anonymous, 200 with token)",
+    "PATCH /api/contact/{id}/read → 200 (when correct _id used)",
+    "DELETE /api/contact/{id} → 200 (when correct _id used)",
+    "GET /api/blog → 3 seeded posts (FR slugs)",
+    "GET /api/blog/{slug} → 200 for valid slug, 404 for unknown",
+    "POST/PUT/DELETE /api/blog with Bearer token work (content min 5 chars)",
+    "Landing page: hero-book-btn scroll + hero-call-btn tel:+33758964620",
+    "Contact form validation: empty submit → error-name/email/message shown; invalid email → error-email; on valid submit form clears + success toast",
+    "Blog list /blog renders cards; article page navigates on click",
+    "/admin unauthenticated redirects to /admin/login",
+    "Admin login redirects to /admin dashboard",
+    "Messages tab displays submitted contact (Alice) and Blog tab lists posts; new-post-btn → editor → save-post-btn creates post visible in list"
+  ],
+  "failed": [
+    {
+      "area": "integration (backend/frontend)",
+      "issue": "Backend responses use `_id` field (Pydantic alias) while frontend AdminDashboard reads `p.id`/`c.id`. Row-level ids resolve to undefined, breaking Delete Post (500 via /api/blog/undefined), Delete Contact, Mark-Read, and edit-post actions.",
+      "evidence": "curl GET /api/blog and /api/contact return keys starting with `_id`. UI click on delete triggers Uncaught runtime error toast 'Request failed with status code 500'. curl DELETE /api/blog/undefined → 500.",
+      "priority": "HIGH"
+    },
+    {
+      "area": "backend contract",
+      "issue": "PUT /api/blog/{id} requires full BlogCreate body (title, content min 5). Not a partial update. Not necessarily a bug but worth noting for admin edit flow.",
+      "evidence": "PUT with only {title} → 422 missing content.",
+      "priority": "LOW"
+    }
+  ],
+  "action_items": [
+    "Fix Mongo id serialization: either (a) set FastAPI route response with `response_model_by_alias=False` (or serialize models with `model_dump(by_alias=False)`) so JSON contains `id` not `_id`, OR (b) change frontend AdminDashboard/AuthContext to read `_id` (map on load). Recommended: change backend to emit `id` for consistency with POST /api/contact which already returns `id`.",
+    "After fix, retest: admin delete post, delete contact, mark-as-read, edit post."
+  ],
+  "success_rate": {"backend": "100%", "frontend": "85%"},
+  "retest_needed": true,
+  "full_testing_deferred": true
+}

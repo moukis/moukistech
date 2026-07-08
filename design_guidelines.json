@@ -1,0 +1,122 @@
+{
+  "theme": "dark",
+  "typography": {
+    "headings": {
+      "family": "Outfit",
+      "weights": ["400", "700", "900"],
+      "description": "Used for all H1-H4. Provides a premium, geometric, and modern tech feel."
+    },
+    "body": {
+      "family": "Manrope",
+      "weights": ["400", "500", "600"],
+      "description": "Crisp and legible for all body copy and descriptions."
+    },
+    "accents": {
+      "family": "JetBrains Mono",
+      "weights": ["400", "700"],
+      "description": "Used for overlines, small labels, tech specs, and the marquee. Enhances the 'technical diagnostic' vibe."
+    }
+  },
+  "colors": {
+    "background": {
+      "primary": "#050507",
+      "secondary": "#0E0E12"
+    },
+    "text": {
+      "primary": "#FFFFFF",
+      "secondary": "#A1A1AA"
+    },
+    "brand": {
+      "electric_blue": "#0055FF",
+      "cyan_glow": "#00E5FF"
+    },
+    "ui": {
+      "border": "rgba(255, 255, 255, 0.08)",
+      "surface": "rgba(255, 255, 255, 0.03)"
+    }
+  },
+  "visual enhancers": {
+    "gradients": "No generic full-screen gradients. Use deep dark backgrounds with localized electric blue radial blurs (e.g., width 600px, height 600px, bg-[#0055FF]/10, blur-3xl) behind key elements like the Hero CTA or Services to create depth.",
+    "textures": "Implement a subtle SVG noise overlay (grain) fixed across the entire site (pointer-events-none, opacity-20) to remove digital flatness.",
+    "borders": "1px solid rgba(255,255,255,0.08) on all cards. On hover, apply a 'tracing beam' effect or transition border color to rgba(0, 229, 255, 0.4)."
+  },
+  "component name": {
+    "buttons": "Pill-shaped (rounded-full). Primary: bg-[#0055FF] text-white hover:bg-[#00E5FF] hover:text-black. Secondary: border border-white/20 hover:border-white text-white bg-transparent.",
+    "cards": "Glassmorphism / Solid Hybrid. bg-[#0E0E12] or bg-white/5 backdrop-blur-xl. 1px inner stroke border-white/10.",
+    "navigation": "Sticky glass header (backdrop-blur-xl bg-[#050507]/70) border-b border-white/10. Contains Logo, Links, and 'Réserver' CTA.",
+    "accordion": "Use Shadcn accordion for FAQ, minimalist styling with thin borders.",
+    "forms": "Use Shadcn form with floating labels or clean minimal inputs, bg-transparent, border-b only or subtle full border."
+  },
+  "grids": "Use Mode A 'Tetris' Grid for Services. Base grid: grid-cols-1 md:grid-cols-4 lg:grid-cols-12. Gap strategy: gap-6 to gap-8. Mix col-span-4, col-span-8 to break symmetry. No perfect squares everywhere.",
+  "layouts": {
+    "spacing": "Generous spacing philosophy. Use p-8 to p-12 inside bento cards. Gaps between sections should be py-24, py-32 or py-40.",
+    "hero": "Full height (min-h-screen). Background: Parallax macro motherboard image with bg-black/70 overlay to ensure text contrast."
+  },
+  "motion": {
+    "scrolling": "Lenis for smooth momentum scrolling. Mandatory for the premium feel.",
+    "reveals": "Framer motion for line-by-line text reveals on H1 (staggerChildren). Staggered fade-up (y: 30, opacity: 0 to 1) for bento grid children.",
+    "micro_interactions": "Buttons: slight scale down on click (scale: 0.98), hover state reveals a subtle blue glow."
+  },
+  "accessibility": {
+    "contrast": "Ensure all text meets APCA/WCAG standards. Do not use pure transparent backgrounds under text. Use bg-black/60 scrims over images.",
+    "focus": "focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none on all interactive elements.",
+    "motion": "Respect prefers-reduced-motion media query to disable heavy parallax or animations."
+  },
+  "media": "High-contrast, moody photography. Real product photography treated deliberately. Use spotlit images and clipped frames. Images should have max-h-[80vh] on mobile.",
+  "3d libraries": "Optional: Use react-spring-parallax for the 2.5D storytelling in the Hero section or framer-motion for simple 3D card tilts.",
+  "image urls": [
+    {
+      "url": "https://images.unsplash.com/photo-1518770660439-4636190af475",
+      "category": "Hero Background",
+      "description": "Macro photography of a black circuit board. Apply a heavy dark overlay (bg-black/70)."
+    },
+    {
+      "url": "https://images.pexels.com/photos/7639374/pexels-photo-7639374.jpeg",
+      "category": "Services - Motherboard",
+      "description": "Close-up hands repairing a laptop circuit board."
+    },
+    {
+      "url": "https://images.pexels.com/photos/9242178/pexels-photo-9242178.jpeg",
+      "category": "About / Why Choose Me",
+      "description": "Technician working on electronics."
+    },
+    {
+      "url": "https://images.pexels.com/photos/9242899/pexels-photo-9242899.jpeg",
+      "category": "Services - Assembly / Upgrades",
+      "description": "Hands assembling motherboard."
+    },
+    {
+      "url": "https://images.pexels.com/photos/6372919/pexels-photo-6372919.jpeg",
+      "category": "Future Store",
+      "description": "Sleek laptop on marble table for premium showcase."
+    },
+    {
+      "url": "https://images.pexels.com/photos/6636474/pexels-photo-6636474.jpeg",
+      "category": "Services - RAM/SSD",
+      "description": "RAM sticks and microprocessors."
+    }
+  ],
+  "section_blueprint": {
+    "Header": "Sticky navigation, logo 'Moukis tech', Links (Accueil, Services, À Propos, Boutique, Contact), CTA 'Réserver', WhatsApp floating icon at bottom right.",
+    "Hero": "H1: 'Réparation Professionnelle d'Ordinateurs Portables de Confiance' (Kinetic text reveal). Subtitle: 'Diagnostic rapide, réparations de qualité, et service honnête.' CTAs: 'Réserver une réparation' & 'Appeler Maintenant'. Background: Parallax circuit image.",
+    "Marquee": "Editorial marquee with JetBrains Mono, text-transparent with white outline (text-stroke), scrolling horizontally: 'DIAGNOSTIC RAPIDE • PIÈCES DE QUALITÉ • SERVICE HONNÊTE • TECHNICIEN EXPERT'.",
+    "Services": "12 bento-style cards. Mix of text-only cards and image-overlay cards. Categories: Diagnostic, Carte Mère, Écran, Batterie, Clavier, SSD, RAM, Windows, macOS, Récupération, Virus, Optimisation.",
+    "Manifesto_Why_Choose_Me": "Numbered sections (01, 02, 03) with large bold numbers in background. 'Technicien Expérimenté', 'Intervention Rapide', 'Prix Honnêtes'.",
+    "Testimonials": "Carousel or staggered grid of client quotes. Minimalist quotes with 5 stars.",
+    "Gallery": "Before/after slider component or side-by-side images showing workspace and clean repairs.",
+    "Future_Store": "Preview of refurbished laptops and parts. Grid layout with 'Bientôt disponible' badges.",
+    "FAQ": "Shadcn accordion component for common questions.",
+    "Contact": "Grid: Left side info (Phone, Email, WhatsApp, Location), Right side Contact form with validation.",
+    "Footer": "Large typography 'Moukis tech', SEO links, social icons, QR code to contact page."
+  },
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
+    "You MUST use Tailwind CSS and Shadcn UI components for complex interactions.",
+    "You MUST NOT center align the app container. Use optical alignment.",
+    "You MUST NOT use 'transition: all'. Explicitly state transitions (e.g., transition-colors, transition-transform).",
+    "Implement 'data-testid' on all interactive elements.",
+    "Use 'sonner' for all toast notifications.",
+    "Language of all UI text MUST be French.",
+    "Do not use generic emojis for icons. Use 'lucide-react' or '@phosphor-icons/react'."
+  ],
+  "instructions_to_main_agent": "Read this JSON fully. Build the UI in French. Implement Framer Motion for scroll reveals and Lenis for smooth scrolling. Ensure the Dark Theme is meticulously crafted avoiding pure black and using the specified Electric Blue accents. Build the bento grid for services with staggered spans. Apply 'data-testid' to all buttons, links, and forms."
+}

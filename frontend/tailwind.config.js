@@ -7,6 +7,14 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontWeight: {
+        '400': '400', '500': '500', '600': '600',
+        '700': '700', '800': '800', '900': '900',
+      },
+      fontFamily: {
+        display: ['Outfit', 'sans-serif'],
+        body: ['Manrope', 'sans-serif'],
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',

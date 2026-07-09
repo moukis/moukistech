@@ -1,0 +1,46 @@
+# Render Blueprint — deploys the backend (web service) + frontend (static site).
+# Docs: https://render.com/docs/blueprint-spec
+# In Render: New + -> Blueprint -> connect this repo/branch -> it reads this file.
+# You must fill the env vars marked `sync: false` in the Render dashboard.
+
+services:
+  # ---------------- Backend (FastAPI) ----------------
+  - type: web
+    name: moukis-tech-backend
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn server:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/
+    envVars:
+      - key: MONGO_URL          # MongoDB Atlas connection string
+        sync: false
+      - key: DB_NAME
+        value: moukis_tech
+      - key: JWT_SECRET         # auto-generated secure value
+        generateValue: true
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: CORS_ORIGINS       # set to your frontend URL, e.g. https://moukis-tech-frontend.onrender.com
+        sync: false
+      - key: FRONTEND_URL       # same as above
+        sync: false
+
+  # ---------------- Frontend (React static build) ----------------
+  - type: web
+    name: moukis-tech-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: yarn install && yarn build
+    staticPublishPath: build
+    envVars:
+      - key: REACT_APP_BACKEND_URL   # set to the backend URL, e.g. https://moukis-tech-backend.onrender.com
+        sync: false
+    routes:
+      # SPA fallback so client-side routes (/blog, /admin, ...) work on refresh
+      - type: rewrite
+        source: /*
+        destination: /index.html

@@ -1,0 +1,52 @@
+# Full local stack: MongoDB + FastAPI backend + React (nginx) frontend.
+# Usage:
+#   docker compose up --build
+# Then open:
+#   Frontend → http://localhost:3000
+#   Backend  → http://localhost:8001/api/
+#
+# All values have sensible local defaults; override via a root .env file or your shell.
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: moukis-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build: ./backend
+    container_name: moukis-backend
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    ports:
+      - "8001:8001"
+    environment:
+      MONGO_URL: "mongodb://mongo:27017"
+      DB_NAME: "${DB_NAME:-moukis_tech}"
+      JWT_SECRET: "${JWT_SECRET:-local-dev-secret-change-in-production}"
+      ADMIN_EMAIL: "${ADMIN_EMAIL:-rewllasy@gmail.com}"
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD:-MoukisTech2025!}"
+      CORS_ORIGINS: "${CORS_ORIGINS:-http://localhost:3000}"
+      FRONTEND_URL: "${FRONTEND_URL:-http://localhost:3000}"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # The browser talks to the backend on the host, not the compose network,
+        # so this must be the host-reachable URL.
+        REACT_APP_BACKEND_URL: "${REACT_APP_BACKEND_URL:-http://localhost:8001}"
+    container_name: moukis-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+
+volumes:
+  mongo_data:

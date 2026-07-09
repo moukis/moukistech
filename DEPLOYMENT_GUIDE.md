@@ -218,6 +218,33 @@ Dockerfile automatically. Add the env vars and it injects `PORT`.
 **Fly.io:** `cd backend && fly launch` (it detects the Dockerfile) → set secrets with
 `fly secrets set MONGO_URL=... JWT_SECRET=... ADMIN_EMAIL=... ADMIN_PASSWORD=... CORS_ORIGINS=... FRONTEND_URL=...`.
 
+### Frontend container (nginx)
+
+`frontend/Dockerfile` is a multi-stage build (Node build → nginx serve) with `frontend/nginx.conf`
+handling gzip, asset caching, security headers, and the SPA fallback. Because CRA bakes env vars
+at build time, pass the backend URL as a build arg:
+
+```bash
+cd frontend
+docker build --build-arg REACT_APP_BACKEND_URL=https://moukis-tech-backend.onrender.com -t moukis-frontend .
+docker run -p 3000:80 moukis-frontend        # → http://localhost:3000
+```
+
+### Full stack with Docker Compose (one command)
+
+The root `docker-compose.yml` runs **MongoDB + backend + frontend** together with local defaults:
+
+```bash
+docker compose up --build
+# Frontend → http://localhost:3000
+# Backend  → http://localhost:8001/api/
+# Admin    → http://localhost:3000/admin/login  (rewllasy@gmail.com / MoukisTech2025!)
+```
+
+Override any value with a root `.env` file or shell exports (e.g. `ADMIN_PASSWORD`, `JWT_SECRET`,
+`REACT_APP_BACKEND_URL`). Mongo data persists in the `mongo_data` volume. Stop with
+`docker compose down` (add `-v` to also wipe the database volume).
+
 ---
 
 ## 🔐 Environment variable reference

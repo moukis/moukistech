@@ -1,0 +1,12 @@
+node_modules
+build
+.env
+.env.*
+!.env.example
+coverage
+.git
+.gitignore
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store

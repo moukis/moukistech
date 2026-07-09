@@ -195,6 +195,31 @@ App → http://localhost:3000 · API docs → http://localhost:8001/docs
 
 ---
 
+## 🐳 Optional: run the backend with Docker
+
+A production `backend/Dockerfile` is included (plus `backend/.dockerignore`). It binds to the
+platform-provided `$PORT`, so it works locally and on Render/Railway/Fly.io.
+
+**Build & run locally:**
+```bash
+cd backend
+docker build -t moukis-backend .
+docker run -p 8001:8001 --env-file .env moukis-backend
+# API → http://localhost:8001/api/
+```
+
+**Render (Docker runtime):** New + → Web Service → set **Root Directory** `backend`, **Runtime** `Docker`.
+Render auto-detects the Dockerfile; add the same env vars as in Part 2. (No start command needed —
+the image's `CMD` uses `$PORT`.)
+
+**Railway:** New Project → Deploy from repo → set root/service to `backend`; Railway builds the
+Dockerfile automatically. Add the env vars and it injects `PORT`.
+
+**Fly.io:** `cd backend && fly launch` (it detects the Dockerfile) → set secrets with
+`fly secrets set MONGO_URL=... JWT_SECRET=... ADMIN_EMAIL=... ADMIN_PASSWORD=... CORS_ORIGINS=... FRONTEND_URL=...`.
+
+---
+
 ## 🔐 Environment variable reference
 
 **Backend** (`backend/.env.example`): `MONGO_URL`, `DB_NAME`, `CORS_ORIGINS`, `FRONTEND_URL`, `JWT_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { SERVICES } from "@/data/content";
+import { SERVICE_ICONS } from "@/data/content";
+import { useLang } from "@/context/LanguageContext";
 import { Overline } from "@/components/Reveal";
 
 const spans = [
@@ -10,22 +11,21 @@ const spans = [
 ];
 
 export default function Services() {
+  const { t } = useLang();
   return (
     <section id="services" data-testid="services-section" className="relative py-28 sm:py-40">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="max-w-2xl">
-          <Overline>Nos Prestations</Overline>
+          <Overline>{t.services.overline}</Overline>
           <h2 className="mt-4 font-display font-800 text-4xl sm:text-5xl lg:text-6xl tracking-tightest leading-[0.95]">
-            Une expertise complète, du diagnostic à la réparation.
+            {t.services.title}
           </h2>
-          <p className="mt-6 font-body text-white/50 text-base">
-            Quel que soit le problème, matériel ou logiciel, nous disposons du savoir-faire pour redonner vie à votre appareil.
-          </p>
+          <p className="mt-6 font-body text-white/50 text-base">{t.services.subtitle}</p>
         </div>
 
         <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-5">
-          {SERVICES.map((s, i) => {
-            const Icon = s.icon;
+          {t.services.items.map((s, i) => {
+            const Icon = SERVICE_ICONS[i];
             return (
               <motion.div
                 key={s.title}
@@ -39,7 +39,7 @@ export default function Services() {
                 <div className="absolute -right-10 -top-10 h-32 w-32 glow-blue opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="relative">
                   <div className="h-12 w-12 rounded-xl bg-[#0055FF]/15 border border-[#0055FF]/30 grid place-items-center text-[#00E5FF] group-hover:bg-[#0055FF] group-hover:text-white transition-colors">
-                    <Icon size={22} />
+                    {Icon && <Icon size={22} />}
                   </div>
                   <h3 className="mt-6 font-display font-700 text-xl tracking-tight">{s.title}</h3>
                   <p className="mt-2 font-body text-sm text-white/50 leading-relaxed">{s.desc}</p>

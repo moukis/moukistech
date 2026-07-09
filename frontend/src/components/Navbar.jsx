@@ -1,22 +1,23 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X } from "lucide-react";
-import { CONTACT } from "@/data/content";
-
-const LINKS = [
-  { label: "Accueil", to: "/#accueil" },
-  { label: "Services", to: "/#services" },
-  { label: "À Propos", to: "/#apropos" },
-  { label: "Boutique", to: "/#boutique" },
-  { label: "Blog", to: "/blog" },
-  { label: "Contact", to: "/#contact" },
-];
+import { useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, Globe } from "lucide-react";
+import { useLang } from "@/context/LanguageContext";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { t, lang, toggle } = useLang();
+
+  const LINKS = [
+    { label: t.nav.home, to: "/#accueil" },
+    { label: t.nav.services, to: "/#services" },
+    { label: t.nav.about, to: "/#apropos" },
+    { label: t.nav.shop, to: "/#boutique" },
+    { label: t.nav.blog, to: "/blog" },
+    { label: t.nav.contact, to: "/#contact" },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -40,6 +41,17 @@ export default function Navbar() {
     }
   };
 
+  const LangToggle = ({ testid }) => (
+    <button
+      data-testid={testid}
+      onClick={toggle}
+      className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-2 font-mono-tech text-xs text-white/80 hover:border-[#00E5FF] hover:text-[#00E5FF] transition-colors"
+      aria-label="Changer de langue"
+    >
+      <Globe size={14} /> {lang === "fr" ? "FR" : "EN"}
+    </button>
+  );
+
   return (
     <header
       data-testid="navbar"
@@ -57,7 +69,7 @@ export default function Navbar() {
           {LINKS.map((l) => (
             <button
               key={l.label}
-              data-testid={`nav-${l.label.toLowerCase()}`}
+              data-testid={`nav-${l.to.replace("/#", "").replace("/", "") || "home"}`}
               onClick={() => go(l.to)}
               className="font-body text-sm text-white/70 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none rounded"
             >
@@ -67,18 +79,22 @@ export default function Navbar() {
         </div>
 
         <div className="hidden lg:flex items-center gap-3">
+          <LangToggle testid="lang-toggle-desktop" />
           <button
             data-testid="nav-book-btn"
             onClick={() => go("/#contact")}
             className="rounded-full bg-[#0055FF] px-5 py-2.5 text-sm font-600 text-white hover:bg-[#00E5FF] hover:text-black transition-colors"
           >
-            Réserver
+            {t.nav.book}
           </button>
         </div>
 
-        <button data-testid="mobile-menu-btn" className="lg:hidden text-white" onClick={() => setOpen(!open)} aria-label="Menu">
-          {open ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="lg:hidden flex items-center gap-2">
+          <LangToggle testid="lang-toggle-mobile" />
+          <button data-testid="mobile-menu-btn" className="text-white" onClick={() => setOpen(!open)} aria-label="Menu">
+            {open ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </nav>
 
       {open && (
@@ -89,7 +105,7 @@ export default function Navbar() {
             </button>
           ))}
           <button onClick={() => go("/#contact")} className="mt-2 rounded-full bg-[#0055FF] px-5 py-3 text-sm font-600 text-white">
-            Réserver une réparation
+            {t.nav.bookFull}
           </button>
         </div>
       )}

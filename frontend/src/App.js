@@ -2,6 +2,7 @@ import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/context/AuthContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 import Landing from "@/pages/Landing";
 import Blog from "@/pages/Blog";
 import BlogArticle from "@/pages/BlogArticle";
@@ -13,19 +14,21 @@ function App() {
   return (
     <div className="App">
       <div className="noise-overlay" aria-hidden="true" />
-      <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<BlogArticle />} />
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-          </Routes>
-          <FloatingActions />
-        </BrowserRouter>
-        <Toaster position="bottom-center" theme="dark" richColors />
-      </AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogArticle />} />
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+            </Routes>
+            <FloatingActions />
+          </BrowserRouter>
+          <Toaster position="bottom-center" theme="dark" richColors />
+        </AuthProvider>
+      </LanguageProvider>
     </div>
   );
 }

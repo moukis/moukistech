@@ -11,6 +11,8 @@ Premium dark-themed, French-language website for **Moukis tech** (owner: **SYLLA
 ## ✨ Features
 
 - **Landing page** (one-page): kinetic hero, editorial marquee, 12 service cards (bento grid), About, "Pourquoi me choisir" manifesto, testimonials, gallery, future store showcase, FAQ accordion, contact form.
+- **FR/EN bilingual toggle** (globe button in the nav) — full French/English translations, choice persisted in the browser.
+- **Before/After slider** — draggable comparison sliders in the gallery, plus real workshop photography.
 - **Contact form** → stored in the database, viewable in the admin panel (mark read / delete).
 - **Full blog** with public listing + article pages, and an **admin panel** to create / edit / delete posts.
 - **Admin dashboard** (`/admin`) protected by JWT login.

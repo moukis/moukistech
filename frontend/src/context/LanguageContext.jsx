@@ -1,10 +1,12 @@
-import { createContext, useContext, useState, useCallback } from "react";
+import { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { translations } from "@/i18n/translations";
 
 const LanguageContext = createContext(null);
 
 export function LanguageProvider({ children }) {
   const [lang, setLang] = useState(() => localStorage.getItem("moukis_lang") || "fr");
+
+  useEffect(() => { document.documentElement.lang = lang; }, [lang]);
 
   const changeLang = useCallback((l) => {
     setLang(l);

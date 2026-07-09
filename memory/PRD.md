@@ -32,3 +32,10 @@ rewllasy@gmail.com / MoukisTech2025! (see test_credentials.md)
 - P1: Activate online store (product catalog + Stripe checkout)
 - P2: Multilingual toggle (FR/EN), before/after image slider, real gallery photos
 - P2: Blog rich-text editor, categories/search
+
+## Update (2026-07-09) — Optional features shipped
+- FR/EN bilingual toggle: i18n system (src/i18n/translations.js + src/context/LanguageContext.jsx),
+  Globe toggle in navbar (desktop+mobile), lang persisted in localStorage 'moukis_lang'. All sections translated.
+- Before/After draggable comparison slider (src/components/BeforeAfter.jsx), 3 pairs in gallery.
+- Refreshed gallery with real workshop/repair photography (src/data/content.js).
+- Tested: iteration_3.json frontend 100% (i18n toggle, slider drag, translated contact select, regressions).

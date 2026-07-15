@@ -16,6 +16,9 @@ const createOfflineApi = () => {
     }
 
     if (path === "/contact") {
+      if (method === "get") {
+        return { data: [] };
+      }
       return { data: { success: true, message: "Message enregistré en mode hors ligne." } };
     }
 

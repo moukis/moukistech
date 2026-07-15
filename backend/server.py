@@ -22,9 +22,10 @@ from pydantic import BaseModel, Field, EmailStr, ConfigDict, BeforeValidator
 # ---------------------------------------------------------------------------
 # Database
 # ---------------------------------------------------------------------------
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+mongo_url = os.getenv("MONGO_URL", "mongodb://127.0.0.1:27017")
+db_name = os.getenv("DB_NAME", "moukis_tech")
+client = AsyncIOMotorClient(mongo_url, serverSelectionTimeoutMS=5000)
+db = client[db_name]
 
 JWT_ALGORITHM = "HS256"
 
@@ -319,6 +320,15 @@ async def seed_blog():
 
 @app.on_event("startup")
 async def on_startup():
+    try:
+        await client.admin.command("ping")
+        logger.info("Connected to MongoDB successfully")
+    except Exception as exc:
+        logger.exception("MongoDB connection failed")
+        raise RuntimeError(
+            f"Could not connect to MongoDB at {mongo_url}. Check the MONGO_URL, credentials, and network access."
+        ) from exc
+
     await db.users.create_index("email", unique=True)
     await db.blog_posts.create_index("slug", unique=True)
     await seed_admin()

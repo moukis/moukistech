@@ -1,3 +1,8 @@
+import axios from "axios";
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL?.replace(/\/$/, "") || "";
+const API_BASE_URL = BACKEND_URL ? `${BACKEND_URL}/api` : "";
+
 const createOfflineApi = () => {
   const mockResponse = (method, url, data) => {
     const path = String(url || "").split("?")[0];
@@ -72,7 +77,23 @@ const createOfflineApi = () => {
   };
 };
 
-export const api = createOfflineApi();
+const createRealApi = () => {
+  const client = axios.create({
+    baseURL: API_BASE_URL,
+    timeout: 10000,
+  });
+
+  return {
+    interceptors: client.interceptors,
+    get: (url) => client.get(url),
+    post: (url, data) => client.post(url, data),
+    put: (url, data) => client.put(url, data),
+    patch: (url, data) => client.patch(url, data),
+    delete: (url) => client.delete(url),
+  };
+};
+
+export const api = API_BASE_URL ? createRealApi() : createOfflineApi();
 
 export function formatApiErrorDetail(detail) {
   if (detail == null) return "Une erreur est survenue. Veuillez réessayer.";

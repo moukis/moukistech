@@ -6,7 +6,7 @@
 services:
   # ---------------- Backend (FastAPI) ----------------
   - type: web
-    name: moukis-tech-backend
+    name: moukistech-backend
     runtime: python
     rootDir: backend
     plan: free
@@ -24,21 +24,21 @@ services:
         sync: false
       - key: ADMIN_PASSWORD
         sync: false
-      - key: CORS_ORIGINS       # set to your frontend URL, e.g. https://moukis-tech-frontend.onrender.com
-        sync: false
-      - key: FRONTEND_URL       # same as above
-        sync: false
+      - key: CORS_ORIGINS
+        value: https://moukistech.onrender.com
+      - key: FRONTEND_URL
+        value: https://moukistech.onrender.com
 
   # ---------------- Frontend (React static build) ----------------
   - type: web
-    name: moukis-tech-frontend
+    name: moukistech
     runtime: static
     rootDir: frontend
-    buildCommand: yarn install && yarn build
+    buildCommand: yarn install && PUBLIC_URL=/ yarn build
     staticPublishPath: build
     envVars:
-      - key: REACT_APP_BACKEND_URL   # set to the backend URL, e.g. https://moukis-tech-backend.onrender.com
-        sync: false
+      - key: REACT_APP_BACKEND_URL
+        value: https://moukistech-backend.onrender.com
     routes:
       # SPA fallback so client-side routes (/blog, /admin, ...) work on refresh
       - type: rewrite

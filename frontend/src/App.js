@@ -11,18 +11,21 @@ import AdminDashboard from "@/pages/AdminDashboard";
 import FloatingActions from "@/components/FloatingActions";
 
 function App() {
+  const basename = window.location.hostname.includes("github.io") ? "/moukistech" : "/";
+
   return (
     <div className="App">
       <div className="noise-overlay" aria-hidden="true" />
       <LanguageProvider>
         <AuthProvider>
-          <BrowserRouter>
+          <BrowserRouter basename={basename}>
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogArticle />} />
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="*" element={<Landing />} />
             </Routes>
             <FloatingActions />
           </BrowserRouter>

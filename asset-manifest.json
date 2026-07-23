@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/moukistech/static/css/main.0f76bcea.css",
+    "main.js": "/moukistech/static/js/main.cb57078d.js",
+    "index.html": "/moukistech/index.html",
+    "main.0f76bcea.css.map": "/moukistech/static/css/main.0f76bcea.css.map",
+    "main.cb57078d.js.map": "/moukistech/static/js/main.cb57078d.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.0f76bcea.css",
+    "static/js/main.cb57078d.js"
+  ]
+}
